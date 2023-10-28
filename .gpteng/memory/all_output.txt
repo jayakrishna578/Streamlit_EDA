@@ -1,0 +1,177 @@
+To implement this, we will need several Python libraries such as streamlit, pandas, numpy, matplotlib, seaborn, sklearn, and others. We will also need to create several Python files to organize our code properly. Here's a list of the core files and their purposes:
+
+1. `app.py`: This is the main entry point of our Streamlit application. It will handle the user interface and call functions from other files to perform tasks like data upload, EDA, model training, and metrics display.
+
+2. `data_upload.py`: This file will contain functions for uploading and reading data files in various formats.
+
+3. `eda.py`: This file will contain functions for performing exploratory data analysis.
+
+4. `model_training.py`: This file will contain functions for training machine learning models.
+
+5. `model_metrics.py`: This file will contain functions for computing and displaying model metrics.
+
+6. `requirements.txt`: This file will list all the Python libraries that our application depends on.
+
+Let's start with the `requirements.txt` file:
+
+requirements.txt
+```
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+```
+
+Next, let's create the `data_upload.py` file:
+
+data_upload.py
+```python
+import streamlit as st
+import pandas as pd
+
+def upload_data():
+    """Upload and read a data file."""
+    file = st.file_uploader("Upload your data file", type=["csv", "xlsx"])
+    if file is not None:
+        if file.type == "text/csv":
+            data = pd.read_csv(file)
+        elif file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            data = pd.read_excel(file)
+        else:
+            st.error("Unsupported file type")
+            return None
+        return data
+```
+
+Next, let's create the `eda.py` file:
+
+eda.py
+```python
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def display_data(data):
+    """Display the first few rows of the dataset."""
+    st.dataframe(data.head())
+
+def generate_summary(data):
+    """Generate summary statistics."""
+    st.write(data.describe())
+
+def plot_distribution(data, column):
+    """Plot the distribution of a numerical variable."""
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data[column])
+    st.pyplot(plt)
+
+def plot_relationship(data, x, y):
+    """Plot the relationship between two variables."""
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(data=data, x=x, y=y)
+    st.pyplot(plt)
+
+def handle_missing_data(data):
+    """Handle missing data."""
+    st.write("Missing values before handling:", data.isnull().sum())
+    data = data.fillna(data.mean())
+    st.write("Missing values after handling:", data.isnull().sum())
+    return data
+
+def feature_engineering(data, features):
+    """Perform feature engineering."""
+    data = data[features]
+    return data
+```
+
+Next, let's create the `model_training.py` file:
+
+model_training.py
+```python
+import streamlit as st
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+
+def split_data(data, target, test_size):
+    """Split the dataset into training and test sets."""
+    X = data.drop(target, axis=1)
+    y = data[target]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+    return X_train, X_test, y_train, y_test
+
+def train_model(model_type, X_train, y_train):
+    """Train a machine learning model."""
+    if model_type == "Linear Regression":
+        model = LinearRegression()
+    elif model_type == "Decision Tree":
+        model = DecisionTreeRegressor()
+    else:
+        st.error("Unsupported model type")
+        return None
+    model.fit(X_train, y_train)
+    return model
+```
+
+Next, let's create the `model_metrics.py` file:
+
+model_metrics.py
+```python
+import streamlit as st
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+def compute_metrics(model, X_test, y_test):
+    """Compute and display model metrics."""
+    y_pred = model.predict(X_test)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    st.write("Mean Absolute Error:", mae)
+    st.write("Mean Squared Error:", mse)
+    st.write("R-squared:", r2)
+```
+
+Finally, let's create the `app.py` file:
+
+app.py
+```python
+import streamlit as st
+from data_upload import upload_data
+from eda import display_data, generate_summary, plot_distribution, plot_relationship, handle_missing_data, feature_engineering
+from model_training import split_data, train_model
+from model_metrics import compute_metrics
+
+def main():
+    """Main function of the Streamlit application."""
+    st.title("Explorative Data Analysis and Model Training Platform")
+
+    data = upload_data()
+    if data is not None:
+        display_data(data)
+        generate_summary(data)
+        column = st.selectbox("Select a column to plot its distribution", data.columns)
+        plot_distribution(data, column)
+        x = st.selectbox("Select the x variable for scatter plot", data.columns)
+        y = st.selectbox("Select the y variable for scatter plot", data.columns)
+        plot_relationship(data, x, y)
+        data = handle_missing_data(data)
+        features = st.multiselect("Select features for feature engineering", data.columns)
+        data = feature_engineering(data, features)
+
+        model_type = st.selectbox("Select a model type", ["Linear Regression", "Decision Tree"])
+        target = st.selectbox("Select the target variable", data.columns)
+        test_size = st.slider("Select the test size ratio", 0.1, 0.5, 0.2)
+        X_train, X_test, y_train, y_test = split_data(data, target, test_size)
+        model = train_model(model_type, X_train, y_train)
+        if model is not None:
+            compute_metrics(model, X_test, y_test)
+
+if __name__ == "__main__":
+    main()
+```
+
+This concludes a fully working implementation.

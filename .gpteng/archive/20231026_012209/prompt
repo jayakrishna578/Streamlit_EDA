@@ -1,0 +1,41 @@
+Design a Streamlit application that serves as a platform for users to conduct explorative data analysis (EDA) and elementary model 
+
+training:
+
+Data Upload:
+
+Create an option for users to upload their dataset. Ensure the application supports common data formats like CSV, Excel, etc.
+
+Explorative Data Analysis (EDA):
+
+Once the dataset is uploaded, provide users with all the EDA options such as:
+Displaying the first few rows of the dataset.
+Generating summary statistics (mean, median, mode, etc.).
+Allow the user to select a target variable.
+Plotting distributions of numerical variables.
+Visualizing relationships between variables (scatter plots, correlation matrices, etc.).
+Handling missing data. Make sure you display the steps involved in dealing with missing data. 
+Feature engineering. Remove unnecessary features by using any suitable feature selection techniques.
+Remember to allow users to select specific columns or variables they want to analyze.
+
+Model Training:
+
+Provide options for users to select model type (e.g., Linear Regression, Decision Tree, etc.).
+Include options for splitting the dataset into training and test sets. Ensure users can define the split ratio.
+Allow users to train the chosen model on the training data.
+Model Metrics Display:
+
+After model training, compute and display relevant model metrics such as:
+Mean Absolute Error (MAE).
+Mean Squared Error (MSE).
+R-squared.
+Confusion Matrix (for classification tasks).
+Other relevant metrics are based on the model type.
+These metrics should be presented in an easily interpretable manner.
+Make sure the model metrics are relevant to the model that was built.
+
+Additional Considerations:
+
+Ensure the interface is user-friendly and intuitive.
+Provide tooltips or help sections to guide users on how to use different features of the application.
+Make sure to handle potential errors or exceptions that might arise, especially during data upload and model training.
